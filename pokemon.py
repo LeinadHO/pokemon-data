@@ -2,6 +2,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
+from openpyxl import Workbook
 
 # Criação do driver que acessará o navegador
 driver = webdriver.Firefox()
@@ -17,11 +18,23 @@ ataques_especiais = driver.find_elements(By.XPATH, "//td[@style='background:#66D
 defesas_especiais = driver.find_elements(By.XPATH, "//td[@style='background:#899EEA']")
 velocidades = driver.find_elements(By.XPATH, "//td[@style='background:#E46CCA']")
 
-# Teste
+# Criação do arquivo onde serão escritos os dados extraídos
+wb = Workbook()
+folha = wb.active
+folha['A1'] = "Número na Pokédex"
+folha['B1'] = "Nome"
+folha['C1'] = "HP"
+folha['D1'] = "Ataque"
+folha['E1'] = "Defesa"
+folha['F1'] = "Ataque Especial"
+folha['G1'] = "Defesa Especial"
+folha['H1'] = "Velocidade"
+
+# Filtragem, formatação e escrita dos dados no arquivo 
 contador = 0
 while contador < len(indices_pokedex):
     indice = indices_pokedex[contador].text
-    # O try-expect garante que os pokémons e suas formas alternativas serão incluídas
+    # O try-expect garante que os pokémons e todas as suas formas alternativas (se existirem) serão incluídas
     try:
         nome_alternativo = nomes[contador].find_element(By.TAG_NAME, "small")
         primeiro_nome = nomes[contador].find_element(By.TAG_NAME, "a").text
@@ -35,10 +48,17 @@ while contador < len(indices_pokedex):
     ataque_especial = ataques_especiais[contador].text
     defesa_especial = defesas_especiais[contador].text
     velocidade = velocidades[contador].text
-    pokemon = f"{indice} {nome} {hp} {ataque} {defesa} {ataque_especial} {defesa_especial} {velocidade}"
-    print(pokemon)  
+    folha[f'A{contador+2}'] = indice
+    folha[f'B{contador+2}'] = nome
+    folha[f'C{contador+2}'] = hp
+    folha[f'D{contador+2}'] = ataque
+    folha[f'E{contador+2}'] = defesa
+    folha[f'F{contador+2}'] = ataque_especial
+    folha[f'G{contador+2}'] = defesa_especial
+    folha[f'H{contador+2}'] = velocidade
     contador += 1
-    
+wb.save("pokemons_status.xlsx")
+
 # Finalização da conexão entre o driver e o navegador
 driver.close()
 

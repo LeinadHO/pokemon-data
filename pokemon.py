@@ -29,6 +29,8 @@ folha['E1'] = "Defesa"
 folha['F1'] = "Ataque Especial"
 folha['G1'] = "Defesa Especial"
 folha['H1'] = "Velocidade"
+folha['I1'] = "Soma dos status"
+folha['J1'] = "Média dos status"
 
 # Filtragem, formatação e escrita dos dados no arquivo 
 contador = 0
@@ -48,6 +50,9 @@ while contador < len(indices_pokedex):
     ataque_especial = ataques_especiais[contador].text
     defesa_especial = defesas_especiais[contador].text
     velocidade = velocidades[contador].text
+    total = int(hp) + int(ataque) + int(defesa) + int(ataque_especial) + int(defesa_especial) + int(velocidade)
+    media = round(total / 6, 2)
+
     folha[f'A{contador+2}'] = indice
     folha[f'B{contador+2}'] = nome
     folha[f'C{contador+2}'] = hp
@@ -56,7 +61,11 @@ while contador < len(indices_pokedex):
     folha[f'F{contador+2}'] = ataque_especial
     folha[f'G{contador+2}'] = defesa_especial
     folha[f'H{contador+2}'] = velocidade
+    folha[f'I{contador+2}'] = total
+    folha[f'J{contador+2}'] = media
+    
     contador += 1
+    
 wb.save("pokemons_status.xlsx")
 
 # Finalização da conexão entre o driver e o navegador
